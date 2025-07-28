@@ -42,8 +42,9 @@ export const useWebSocket = ({ onNotification, onSystemMessage }: UseWebSocketPr
   useEffect(() => {
     // Connect to Observer WebSocket
     const connectObserver = () => {
-      observerWs.current = new WebSocket('ws://localhost:8000/ws/observer');
-      
+      const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8000/ws/observer';
+      observerWs.current = new WebSocket(wsUrl);
+
       observerWs.current.onopen = () => {
         setRobotConnections(prev => ({ ...prev, observer: true }));
         onNotification?.('✅ Observer conectado', 'success');
@@ -76,8 +77,9 @@ export const useWebSocket = ({ onNotification, onSystemMessage }: UseWebSocketPr
 
     // Connect Robot A (Bogotá)
     const connectRobotA = () => {
-      robotAWs.current = new WebSocket('ws://localhost:8000/ws/robots');
-      
+      const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8000/ws/observer';
+      robotAWs.current = new WebSocket(wsUrl);
+
       robotAWs.current.onopen = () => {
         setRobotConnections(prev => ({ ...prev, robotA: true }));
         onNotification?.('✅ Robot Bogotá conectado', 'success');
