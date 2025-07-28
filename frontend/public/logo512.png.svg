@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#E6F3FF"/>
+  
+  <!-- Main cloud -->
+  <ellipse cx="256" cy="280" rx="160" ry="80" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="4"/>
+  
+  <!-- Cloud bumps for realistic look -->
+  <circle cx="156" cy="240" r="50" fill="#FFFFFF"/>
+  <circle cx="206" cy="220" r="45" fill="#FFFFFF"/>
+  <circle cx="256" cy="210" r="55" fill="#FFFFFF"/>
+  <circle cx="306" cy="220" r="45" fill="#FFFFFF"/>
+  <circle cx="356" cy="240" r="50" fill="#FFFFFF"/>
+  
+  <!-- Additional smaller clouds -->
+  <ellipse cx="180" cy="150" rx="40" ry="20" fill="#F0F8FF" opacity="0.8"/>
+  <ellipse cx="320" cy="140" rx="35" ry="18" fill="#F0F8FF" opacity="0.8"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="320" cy="120" r="8" fill="#87CEEB" opacity="0.6"/>
+  <circle cx="200" cy="110" r="6" fill="#87CEEB" opacity="0.6"/>
+  <circle cx="280" cy="100" r="7" fill="#87CEEB" opacity="0.6"/>
+  
+  <!-- Cloud shadow -->
+  <ellipse cx="256" cy="340" rx="130" ry="20" fill="#E0E0E0" opacity="0.4"/>
+</svg>
