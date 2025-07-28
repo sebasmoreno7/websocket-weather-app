@@ -2,7 +2,7 @@
 import asyncio
 import json
 import random
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
@@ -27,6 +27,11 @@ app.add_middleware(
 observers: List[WebSocket] = []
 robot_tasks = {}
 
+def get_colombia_time():
+    """Get current time in Colombia timezone (UTC-5)"""
+    colombia_tz = timezone(timedelta(hours=-5))
+    return datetime.now(colombia_tz)
+
 async def get_weather_data(city: str):
     """Get simulated weather data for each city"""
     if city == "bogota":
@@ -38,13 +43,14 @@ async def get_weather_data(city: str):
         humidity = random.randint(55, 75)
         emoji = "🌺"
     
-    time = datetime.now().strftime("%H:%M:%S")
+    colombia_time = get_colombia_time()
+    time = colombia_time.strftime("%H:%M:%S")
     
     return {
         "city": city,
         "temperature": temp,
         "humidity": humidity,
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": colombia_time.isoformat(),
         "time": time,
         "emoji": emoji
     }
@@ -103,14 +109,14 @@ async def handle_chat_message(content: str):
             return {
                 "type": "chat_response",
                 "message": f"🏔️ Bogotá: {weather['temperature']}°C, Humedad: {weather['humidity']}% - {weather['time']}",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": get_colombia_time().isoformat()
             }
         elif "medellin" in content_lower or "medellín" in content_lower:
             weather = await get_weather_data("medellin")
             return {
                 "type": "chat_response", 
                 "message": f"🌺 Medellín: {weather['temperature']}°C, Humedad: {weather['humidity']}% - {weather['time']}",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": get_colombia_time().isoformat()
             }
         else:
             # Return both cities
@@ -119,20 +125,21 @@ async def handle_chat_message(content: str):
             return {
                 "type": "chat_response",
                 "message": f"🏔️ Bogotá: {bogota['temperature']}°C | 🌺 Medellín: {medellin['temperature']}°C",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": get_colombia_time().isoformat()
             }
     elif "hora" in content_lower or "time" in content_lower:
-        current_time = datetime.now().strftime("%H:%M:%S")
+        colombia_time = get_colombia_time()
+        current_time = colombia_time.strftime("%H:%M:%S")
         return {
             "type": "chat_response",
-            "message": f"🕐 Hora actual: {current_time}",
-            "timestamp": datetime.now().isoformat()
+            "message": f"🕐 Hora actual en Colombia: {current_time}",
+            "timestamp": colombia_time.isoformat()
         }
     else:
         return {
             "type": "chat_response",
             "message": "🤖 Puedes preguntar sobre:\n• Clima de Bogotá o Medellín\n• Temperatura actual\n• Hora actual",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": get_colombia_time().isoformat()
         }
 
 @app.on_event("startup")
@@ -164,7 +171,7 @@ async def get_status():
     return {
         "server": "Real WebSocket Weather Server",
         "status": "running",
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": get_colombia_time().isoformat(),
         "observers_connected": len(observers),
         "robot_tasks": list(robot_tasks.keys()),
         "uptime": "running"
@@ -181,7 +188,7 @@ async def websocket_observer(websocket: WebSocket):
     welcome = {
         "type": "connection",
         "message": "✅ Conectado como Observer - Recibirás datos automáticos de robots",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": get_colombia_time().isoformat()
     }
     await websocket.send_text(json.dumps(welcome))
     
