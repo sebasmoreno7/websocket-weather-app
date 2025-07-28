@@ -1,9 +1,11 @@
 // src/components/Auth/LoginScreen.tsx
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useResponsive } from '../../hooks/useResponsive';
 
 const LoginScreen: React.FC = () => {
   const { loginWithGoogle, loading } = useAuth();
+  const { mobile } = useResponsive();
 
   const handleGoogleLogin = () => {
     loginWithGoogle();
@@ -17,25 +19,25 @@ const LoginScreen: React.FC = () => {
       justifyContent: 'center',
       minHeight: '100vh',
       backgroundColor: '#f0f2f5',
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: 'Arial, sans-serif',
+      padding: mobile ? '10px' : '20px'
     }}>
       {/* Login Card */}
       <div style={{
         backgroundColor: 'white',
-        padding: '40px',
+        padding: mobile ? '30px 20px' : '40px',
         borderRadius: '12px',
         boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
         textAlign: 'center',
-        maxWidth: '400px',
-        width: '100%',
-        margin: '20px'
+        maxWidth: mobile ? '350px' : '400px',
+        width: '100%'
       }}>
         {/* Logo/Title */}
-        <div style={{ marginBottom: '30px' }}>
+        <div style={{ marginBottom: mobile ? '25px' : '30px' }}>
           <h1 style={{ 
             margin: '0 0 10px 0', 
             color: '#1a73e8',
-            fontSize: '32px',
+            fontSize: mobile ? 'clamp(24px, 6vw, 28px)' : '32px',
             fontWeight: 'bold'
           }}>
             🌦️ Weather Monitor
@@ -43,7 +45,7 @@ const LoginScreen: React.FC = () => {
           <p style={{ 
             margin: '0', 
             color: '#666',
-            fontSize: '16px',
+            fontSize: mobile ? 'clamp(14px, 3.5vw, 15px)' : '16px',
             lineHeight: '1.4'
           }}>
             Sistema de monitoreo meteorológico en tiempo real

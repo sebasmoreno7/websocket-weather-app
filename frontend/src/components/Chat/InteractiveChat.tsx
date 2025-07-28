@@ -1,5 +1,6 @@
 // src/components/Chat/InteractiveChat.tsx
 import React from 'react';
+import { useResponsive } from '../../hooks/useResponsive';
 
 interface InteractiveChatProps {
   userInput: string;
@@ -14,15 +15,22 @@ const InteractiveChat: React.FC<InteractiveChatProps> = ({
   onSendMessage,
   onKeyPress
 }) => {
+  const { mobile } = useResponsive();
+
   return (
     <div>
-      <h2>💬 Chat Clima Colombia</h2>
+      <h2 style={{ 
+        fontSize: "clamp(18px, 4vw, 20px)",
+        marginBottom: "clamp(15px, 3vw, 20px)"
+      }}>
+        💬 Chat Clima Colombia
+      </h2>
       <div style={{ 
         border: "1px solid #ddd", 
         borderRadius: "8px", 
         background: "#fafafa",
-        padding: "20px",
-        minHeight: "100px",
+        padding: "clamp(15px, 3vw, 20px)",
+        minHeight: mobile ? "80px" : "100px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center"
@@ -30,41 +38,54 @@ const InteractiveChat: React.FC<InteractiveChatProps> = ({
         <p style={{ 
           margin: "0 0 15px 0", 
           color: "#666", 
-          fontSize: "14px" 
+          fontSize: "clamp(12px, 2.5vw, 14px)",
+          lineHeight: "1.4"
         }}>
-          💡 Escribe tu pregunta y las respuestas aparecerán en el panel derecho
+          💡 {mobile ? "Pregunta sobre el clima" : "Escribe tu pregunta y las respuestas aparecerán en el panel derecho"}
         </p>
         
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div style={{ 
+          display: "flex", 
+          flexDirection: mobile ? "column" : "row",
+          gap: mobile ? "12px" : "10px" 
+        }}>
           <input
             type="text"
             value={userInput}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyPress={onKeyPress}
-            placeholder="Pregunta por Bogotá, Medellín, temperatura, hora..."
+            placeholder={mobile ? "Pregunta por el clima..." : "Pregunta por Bogotá, Medellín, temperatura, hora..."}
             style={{
               flex: 1,
-              padding: "12px",
+              padding: "clamp(10px, 2.5vw, 12px)",
               border: "1px solid #ddd",
               borderRadius: "6px",
-              fontSize: "14px"
+              fontSize: "clamp(14px, 3vw, 16px)"
             }}
           />
           
-          <button
+                    <button
             onClick={onSendMessage}
             style={{
-              padding: "12px 20px",
+              padding: "clamp(10px, 2.5vw, 12px) clamp(16px, 3vw, 20px)",
               backgroundColor: "#007bff",
               color: "white",
               border: "none",
               borderRadius: "6px",
               cursor: "pointer",
-              fontSize: "14px",
-              fontWeight: "bold"
+              fontSize: "clamp(14px, 3vw, 16px)",
+              fontWeight: "500",
+              whiteSpace: "nowrap",
+              minWidth: mobile ? "100%" : "auto"
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#0056b3";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#007bff";
             }}
           >
-            Enviar 📤
+            {mobile ? "Enviar 📤" : "Enviar"}
           </button>
         </div>
         

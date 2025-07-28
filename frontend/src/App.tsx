@@ -4,6 +4,7 @@ import { useAuth } from './hooks/useAuth';
 import { useNotifications } from './hooks/useNotifications';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useChat } from './hooks/useChat';
+import { useResponsive } from './hooks/useResponsive';
 import LoginScreen from './components/Auth/LoginScreen';
 import OAuthCallback from './components/Auth/OAuthCallback';
 import NotificationContainer from './components/Notifications/NotificationContainer';
@@ -15,6 +16,7 @@ import AppStyles from './components/Layout/AppStyles';
 function App() {
   const { user, loading, logout, isAuthenticated } = useAuth();
   const { notifications, addNotification } = useNotifications();
+  const { mobile, width } = useResponsive();
   
   const addSystemMessage = useCallback((message: string) => {
     // This will be passed to useWebSocket to add system messages
@@ -81,7 +83,7 @@ function App() {
   return (
     <div style={{ 
       fontFamily: "sans-serif", 
-      padding: "1rem", 
+      padding: "clamp(0.5rem, 2vw, 1rem)", 
       maxWidth: "1200px", 
       margin: "0 auto",
       backgroundColor: "#f8f9fa",
@@ -92,37 +94,45 @@ function App() {
       {/* Header with user info and logout */}
       <div style={{
         display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: mobile ? 'stretch' : 'center',
+        gap: mobile ? '15px' : '0',
         marginBottom: '20px',
-        padding: '20px',
+        padding: 'clamp(15px, 3vw, 20px)',
         backgroundColor: 'white',
         borderRadius: '12px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: 1 }}>
           <img 
             src={user?.picture || 'https://via.placeholder.com/50'} 
             alt="Profile" 
             style={{ 
-              width: '50px', 
-              height: '50px', 
+              width: 'clamp(40px, 8vw, 50px)', 
+              height: 'clamp(40px, 8vw, 50px)', 
               borderRadius: '50%',
               border: '2px solid #e0e0e0'
             }}
           />
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ 
               fontWeight: 'bold', 
-              fontSize: '18px',
+              fontSize: 'clamp(16px, 3.5vw, 18px)',
               color: '#333',
-              marginBottom: '2px'
+              marginBottom: '2px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
             }}>
               ¡Hola, {user?.name || 'Usuario'}! 👋
             </div>
             <div style={{ 
-              fontSize: '14px', 
-              color: '#666' 
+              fontSize: 'clamp(12px, 2.5vw, 14px)', 
+              color: '#666',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
             }}>
               {user?.email}
             </div>
@@ -132,15 +142,17 @@ function App() {
         <button
           onClick={logout}
           style={{
-            padding: '10px 20px',
+            padding: 'clamp(8px, 2vw, 10px) clamp(15px, 3vw, 20px)',
             backgroundColor: '#dc3545',
             color: 'white',
             border: 'none',
             borderRadius: '8px',
             cursor: 'pointer',
-            fontSize: '14px',
+            fontSize: 'clamp(12px, 2.5vw, 14px)',
             fontWeight: '500',
-            transition: 'background-color 0.2s ease'
+            transition: 'background-color 0.2s ease',
+            whiteSpace: 'nowrap',
+            width: mobile ? '100%' : 'auto'
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = '#c82333';
@@ -157,8 +169,8 @@ function App() {
 
       <div style={{ 
         display: "grid", 
-        gridTemplateColumns: "1fr 1fr", 
-        gap: "20px",
+        gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", 
+        gap: "clamp(15px, 3vw, 20px)",
         marginTop: "20px"
       }}>
         <InteractiveChat
