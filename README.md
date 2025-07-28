@@ -8,7 +8,7 @@ Sistema de monitoreo meteorológico en tiempo real para Bogotá y Medellín con 
 
 - **Frontend**: Desplegado en **Vercel**
 - **Backend**: Desplegado en **Render**
-- **Datos**: Simulados en tiempo real (sin necesidad de APIs)
+- **Datos**: Conectados por API
 
 ## ✨ Características
 
