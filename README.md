@@ -2,6 +2,14 @@
 
 Sistema de monitoreo meteorológico en tiempo real para Bogotá y Medellín con chat inteligente, autenticación OAuth y diseño responsivo.
 
+## 🌐 Demo en Vivo
+
+**🚀 Prueba la aplicación aquí:** [https://websocket-weather-app-lqpu.vercel.app/](https://websocket-weather-app-lqpu.vercel.app/)
+
+- **Frontend**: Desplegado en **Vercel**
+- **Backend**: Desplegado en **Render**
+- **Datos**: Simulados en tiempo real (sin necesidad de APIs)
+
 ## ✨ Características
 
 - **📡 Datos en tiempo real**: OpenWeatherMap API con fallback a datos simulados
@@ -79,10 +87,38 @@ La aplicación web estará disponible en: http://localhost:3000
 
 ### 🌐 URLs Importantes
 
+**🌍 Producción:**
+- **Aplicación en vivo**: https://websocket-weather-app-lqpu.vercel.app/
+
+**🏠 Desarrollo local:**
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **Documentación API**: http://localhost:8000/docs
 - **WebSocket**: ws://localhost:8000/ws/observer
+
+## 🚀 Despliegue
+
+### Producción Actual
+- **Frontend**: Desplegado en **Vercel** (automático desde GitHub)
+- **Backend**: Desplegado en **Render** (automático desde GitHub)
+- **CI/CD**: Despliegue automático en cada push a `main`
+
+### Desplegar tu propia versión
+
+#### Frontend en Vercel
+1. Fork este repositorio
+2. Conecta tu GitHub a [Vercel](https://vercel.com)
+3. Importa el proyecto
+4. Configura el directorio raíz como `frontend`
+5. Deploy automático ✅
+
+#### Backend en Render
+1. Conecta tu GitHub a [Render](https://render.com)
+2. Crea un nuevo Web Service
+3. Configura el directorio raíz como `backend`
+4. Comando de build: `pip install -r requirements.txt`
+5. Comando de inicio: `python main.py`
+6. Deploy automático ✅
 
 ## 🔧 Configuración Opcional
 
