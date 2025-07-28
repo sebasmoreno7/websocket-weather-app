@@ -2,11 +2,17 @@
 import asyncio
 import json
 import random
+import os
+import aiohttp
 from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
+from typing import List, Optional
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -27,20 +33,80 @@ app.add_middleware(
 observers: List[WebSocket] = []
 robot_tasks = {}
 
+# OpenWeatherMap API configuration
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "demo_key_for_testing")
+
+# City coordinates for OpenWeatherMap API
+CITIES = {
+    "bogota": {"lat": 4.7110, "lon": -74.0721, "name": "Bogotá", "emoji": "🏔️"},
+    "medellin": {"lat": 6.2442, "lon": -75.5812, "name": "Medellín", "emoji": "🌺"}
+}
+
 def get_colombia_time():
     """Get current time in Colombia timezone (UTC-5)"""
     colombia_tz = timezone(timedelta(hours=-5))
     return datetime.now(colombia_tz)
 
-async def get_weather_data(city: str):
-    """Get simulated weather data for each city"""
+async def get_real_weather_data(city: str) -> Optional[dict]:
+    """Get real weather data from OpenWeatherMap API"""
+    if city not in CITIES:
+        return None
+    
+    city_info = CITIES[city]
+    
+    # If no real API key, return simulated data
+    if OPENWEATHER_API_KEY == "demo_key_for_testing":
+        logger.info(f"Using simulated data for {city} (no real API key configured)")
+        return await get_simulated_weather_data(city)
+    
+    try:
+        url = f"https://api.openweathermap.org/data/2.5/weather"
+        params = {
+            "lat": city_info["lat"],
+            "lon": city_info["lon"],
+            "appid": OPENWEATHER_API_KEY,
+            "units": "metric",  # Celsius
+            "lang": "es"  # Spanish
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    colombia_time = get_colombia_time()
+                    time = colombia_time.strftime("%H:%M:%S")
+                    
+                    return {
+                        "city": city,
+                        "name": city_info["name"],
+                        "temperature": round(data["main"]["temp"]),
+                        "humidity": data["main"]["humidity"],
+                        "description": data["weather"][0]["description"].title(),
+                        "time": time,
+                        "emoji": city_info["emoji"],
+                        "source": "OpenWeatherMap API",
+                        "real_data": True
+                    }
+                else:
+                    logger.error(f"OpenWeatherMap API error for {city}: {response.status}")
+                    return await get_simulated_weather_data(city)
+                    
+    except Exception as e:
+        logger.error(f"Error fetching real weather data for {city}: {e}")
+        return await get_simulated_weather_data(city)
+
+async def get_simulated_weather_data(city: str):
+    """Get simulated weather data for each city (fallback)"""
     if city == "bogota":
         temp = random.randint(14, 22)
         humidity = random.randint(60, 85)
+        name = "Bogotá"
         emoji = "🏔️"
     else:  # medellin
         temp = random.randint(20, 30)
         humidity = random.randint(55, 75)
+        name = "Medellín"
         emoji = "🌺"
     
     colombia_time = get_colombia_time()
@@ -48,12 +114,20 @@ async def get_weather_data(city: str):
     
     return {
         "city": city,
+        "name": name,
         "temperature": temp,
         "humidity": humidity,
-        "timestamp": colombia_time.isoformat(),
+        "description": "Parcialmente nublado",
         "time": time,
-        "emoji": emoji
+        "emoji": emoji,
+        "source": "Datos simulados",
+        "real_data": False
     }
+
+# Main weather function that tries real data first, then falls back to simulated
+async def get_weather_data(city: str):
+    """Get weather data - tries real API first, falls back to simulated"""
+    return await get_real_weather_data(city)
 
 async def broadcast_to_observers(message: dict):
     """Send message to all connected observers"""
@@ -84,7 +158,7 @@ async def robot_worker(city: str, interval: int):
                 "type": "weather_update",
                 "robot": f"robot_{city}",
                 "data": weather,
-                "message": f"{weather['emoji']} Robot {city.title()}: {weather['temperature']}°C - {weather['time']}"
+                "message": f"{weather['emoji']} Robot {weather['name']}: {weather['temperature']}°C, {weather['description']} - {weather['time']} ({weather['source']})"
             }
             
             await broadcast_to_observers(message)

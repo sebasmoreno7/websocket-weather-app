@@ -34,7 +34,9 @@ export const useWebSocket = ({ onNotification, onSystemMessage }: UseWebSocketPr
     const temp = city === 'bogota' ? Math.floor(Math.random() * 8) + 14 : Math.floor(Math.random() * 10) + 20;
     const time = new Date().toLocaleTimeString('es-CO', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'America/Bogota'
     });
     return { temp, time };
   };
