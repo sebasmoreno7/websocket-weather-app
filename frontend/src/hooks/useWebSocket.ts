@@ -37,7 +37,8 @@ export const useWebSocket = ({ onNotification, onSystemMessage }: UseWebSocketPr
   useEffect(() => {
     // Connect as Observer to receive automatic robot data
     const connectObserver = () => {
-      observerWs.current = new WebSocket('ws://localhost:8000/ws/observer');
+      const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8000/ws/observer';
+      observerWs.current = new WebSocket(wsUrl);
       
       observerWs.current.onopen = () => {
         setRobotConnections(prev => ({ ...prev, observer: true }));
