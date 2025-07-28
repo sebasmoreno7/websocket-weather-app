@@ -1,10 +1,18 @@
 """
 FastAPI Weather WebSocket Server - Modular Architecture
 """
+import sys
+import os
 import logging
+from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Add the current directory to Python path to find the app module
+current_dir = Path(__file__).parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
 
 # Import application components
 from app.core.settings import settings
