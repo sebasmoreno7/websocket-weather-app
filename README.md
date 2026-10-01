@@ -13,4 +13,13 @@ A previous README listed a Vercel demo and Render deployment. Their current avai
 
 ## Run locally
 
-In `backend/`, create a Python virtual environment, run `pip install -r requirements.txt`, then `python main.py`. In another terminal, run `npm install` and `npm start` in `frontend/`. The backend defaults to port 8000 and the frontend to port 3000. Set `OPENWEATHER_API_KEY` for live weather data; without it, readings may be simulated. These instructions reflect the code and have not been revalidated in this audit.
+In `backend/`, create a Python virtual environment, run `pip install -r requirements.txt`, then `python main.py`. In another terminal, run `npm install` and `npm start` in `frontend/`. The backend defaults to port 8000 and the frontend to port 3000. Set `OPENWEATHER_API_KEY` for live weather data; without it, readings may be simulated.
+
+The backend service checks run without an API key or network calls:
+
+```sh
+cd backend
+python -m unittest discover -s tests -v
+```
+
+The four service checks passed with Python 3.12 and dependencies installed from `backend/requirements.txt`. Full frontend and deployment behavior were not validated by these checks.
