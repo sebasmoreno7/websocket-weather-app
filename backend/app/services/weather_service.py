@@ -37,7 +37,8 @@ class WeatherService:
                 "lang": "es"  # Spanish
             }
             
-            async with aiohttp.ClientSession() as session:
+            # Keep a slow upstream from blocking this robot indefinitely.
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
                 async with session.get(url, params=params) as response:
                     if response.status == 200:
                         data = await response.json()
