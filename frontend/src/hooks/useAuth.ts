@@ -36,10 +36,11 @@ export const useAuth = () => {
   }, [user]);
 
   const loginWithGoogle = useCallback(() => {
-    setLoading(true);
-    
     // Google OAuth configuration - usando flujo implícito para frontend
-    const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || ''; 
+    const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID?.trim();
+    if (!CLIENT_ID) return;
+
+    setLoading(true);
     const REDIRECT_URI = window.location.origin + '/oauth/callback';
     const SCOPE = 'openid email profile';
     
