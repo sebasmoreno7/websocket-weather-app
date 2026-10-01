@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('shows the weather sign-in screen', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /weather monitor/i })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /continuar con google/i })).toBeInTheDocument();
 });
