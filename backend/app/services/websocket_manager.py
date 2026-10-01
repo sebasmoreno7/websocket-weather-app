@@ -18,9 +18,6 @@ class WebSocketManager:
     async def connect_observer(self, websocket: WebSocket):
         """Connect a new observer"""
         await websocket.accept()
-        self.observers.append(websocket)
-        logger.info(f"✅ Observer connected. Total observers: {len(self.observers)}")
-        
         # Send welcome message
         welcome = ConnectionMessage(
             type="connection",
@@ -28,6 +25,8 @@ class WebSocketManager:
             timestamp=self._get_timestamp()
         )
         await websocket.send_text(welcome.json())
+        self.observers.append(websocket)
+        logger.info(f"✅ Observer connected. Total observers: {len(self.observers)}")
     
     def disconnect_observer(self, websocket: WebSocket):
         """Disconnect an observer"""
