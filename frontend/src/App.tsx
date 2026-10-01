@@ -16,7 +16,7 @@ import AppStyles from './components/Layout/AppStyles';
 function App() {
   const { user, loading, logout, isAuthenticated } = useAuth();
   const { notifications, addNotification } = useNotifications();
-  const { mobile, width } = useResponsive();
+  const { mobile } = useResponsive();
   
   const addSystemMessage = useCallback((message: string) => {
     // This will be passed to useWebSocket to add system messages
