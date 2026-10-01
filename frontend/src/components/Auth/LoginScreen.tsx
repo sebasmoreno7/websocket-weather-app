@@ -6,6 +6,7 @@ import { useResponsive } from '../../hooks/useResponsive';
 const LoginScreen: React.FC = () => {
   const { loginWithGoogle, loading } = useAuth();
   const { mobile } = useResponsive();
+  const googleClientConfigured = Boolean(process.env.REACT_APP_GOOGLE_CLIENT_ID?.trim());
 
   const handleGoogleLogin = () => {
     loginWithGoogle();
@@ -67,7 +68,7 @@ const LoginScreen: React.FC = () => {
         {/* Google Login Button */}
         <button
           onClick={handleGoogleLogin}
-          disabled={loading}
+          disabled={loading || !googleClientConfigured}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -120,6 +121,12 @@ const LoginScreen: React.FC = () => {
           
           {loading ? 'Iniciando sesión...' : 'Continuar con Google'}
         </button>
+
+        {!googleClientConfigured && (
+          <p role="alert" style={{ color: '#b3261e', fontSize: '14px', marginTop: '16px' }}>
+            El inicio de sesión con Google no está configurado en este despliegue.
+          </p>
+        )}
 
         {/* Footer info */}
         <div style={{ 
