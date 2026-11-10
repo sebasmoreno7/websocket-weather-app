@@ -22,4 +22,4 @@ cd backend
 python -m unittest discover -s tests -v
 ```
 
-The four service checks passed with Python 3.12 and dependencies installed from `backend/requirements.txt`. Full frontend and deployment behavior were not validated by these checks.
+The four service checks passed with Python 3.12 and dependencies installed from `backend/requirements.txt`. The frontend now uses Vite in place of the unsupported Create React App toolchain; its production build, TypeScript check and existing UI test pass. CI checks both services and audits their dependencies. Live OAuth, weather API credentials and deployed infrastructure require separate verification.
